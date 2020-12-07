@@ -1,0 +1,13 @@
+{
+  "HubeeServiceDiscoveryConfig": {
+    "ServiceName": "test-service",
+    "ServiceDiscovery": "Consul",
+    "HostName": "",
+    "Port": "",
+    "HealthCheck": {
+      "Endpoint": "healthcheck",
+      "Interval": 60,
+      "DeregisterCriticalServiceAfter": 60
+    }
+  }
+}
