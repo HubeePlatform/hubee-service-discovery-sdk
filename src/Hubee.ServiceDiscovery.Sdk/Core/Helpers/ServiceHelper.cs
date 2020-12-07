@@ -1,5 +1,4 @@
-﻿using Hubee.ServiceDiscovery.Sdk.Core.Models.Constants;
-using Microsoft.AspNetCore.Hosting.Server;
+﻿using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using System;
 using System.Linq;
@@ -17,18 +16,16 @@ namespace Hubee.ServiceDiscovery.Sdk.Core.Helpers
                 .Addresses
                 .First();
 
+            if (address.Contains("+:"))
+                return int.Parse(address.Split(':')[2]);
+
             return new Uri(address).Port;
         }
 
         public static string GetNonLoopbackIp()
         {
-            return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").Equals("Development")
-                ? ServiceDefault.LOCAL_ADDRESS_IP
-                : Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(x =>
-                        x.AddressFamily == AddressFamily.InterNetwork &&
-                        x.ToString() != ServiceDefault.LOCAL_ADDRESS &&
-                        x.ToString() != ServiceDefault.LOCAL_ADDRESS_IP)
-                    .ToString();
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(x =>
+                        x.AddressFamily == AddressFamily.InterNetwork).ToString();
         }
     }
 }
