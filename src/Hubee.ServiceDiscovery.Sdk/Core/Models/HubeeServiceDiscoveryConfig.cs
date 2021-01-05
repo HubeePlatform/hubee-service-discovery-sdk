@@ -24,6 +24,8 @@ namespace Hubee.ServiceDiscovery.Sdk.Core.Models
 
         public void CheckConfig()
         {
+            TryGetConfigFromEnvironment();
+
             var isInvalid = string.IsNullOrEmpty(this.ServiceName) ||
                  this.ServiceDiscoveryType.Equals(ServiceDiscoveryType.Undefined) ||
                  string.IsNullOrEmpty(this.HostName) ||
@@ -35,6 +37,15 @@ namespace Hubee.ServiceDiscovery.Sdk.Core.Models
 
             if (isInvalid)
                 throw new InvalidOperationException($"Please, configure appsettings with a {nameof(HubeeServiceDiscoveryConfig)} section");
+        }
+
+        private void TryGetConfigFromEnvironment()
+        {
+            var hostname = Environment.GetEnvironmentVariable("SERVICEDISCOVERY_HOSTNAME");
+            this.HostName = hostname ?? this.HostName;
+
+            var port = Environment.GetEnvironmentVariable("SERVICEDISCOVERY_PORT");
+            this.Port = port ?? this.Port;
         }
     }
 }
