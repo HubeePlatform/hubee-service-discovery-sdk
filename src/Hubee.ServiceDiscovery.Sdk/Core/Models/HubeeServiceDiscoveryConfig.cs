@@ -9,6 +9,8 @@ namespace Hubee.ServiceDiscovery.Sdk.Core.Models
         public string ServiceDiscovery { get; set; }
         public string HostName { get; set; }
         public string Port { get; set; }
+        public string DnsIpAddress { get; set; }
+        public int DnsPort { get; set; } = 8600;
         public HealthCheckConfig HealthCheck { get; set; }
         public ServiceDiscoveryType ServiceDiscoveryType => EnumHelper.Parse<ServiceDiscoveryType>(this.ServiceDiscovery);
 

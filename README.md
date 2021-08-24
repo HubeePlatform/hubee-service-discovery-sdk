@@ -18,6 +18,8 @@ Após realizar a instalação do SDK em seu projeto podemos iniciar a configura�
     "ServiceDiscovery": "Consul",
     "HostName": "localhost",
     "Port": "8500",
+    "DnsIpAddress": "10.0.0.1",
+    "DnsPort": "8600",
     "HealthCheck": {
       "Endpoint": "healthcheck",
       "Interval": 60,
@@ -32,6 +34,8 @@ Após realizar a instalação do SDK em seu projeto podemos iniciar a configura�
 | ServiceDiscovery | service discovery que será utilizado |
 | HostName | host do service discovery |
 | Port | porta do service discovery |
+| DnsIpAddress | edereço ip do serviço de resolução de nomes |
+| DnsPort | porta do serviço de resolução de nomes |
 | HealthCheck.Endpoint | endpoint de health check do serviço |
 | HealthCheck.Interval | valor em segundos que especifica a frequência de execução da verificação do health check |
 | HealthCheck.DeregisterCriticalServiceAfter | valor em segundos que especifica que as verificações associadas a um serviço devem cancelar o registro após esse tempo |
@@ -48,6 +52,21 @@ public class Startup
   public void ConfigureServices(IServiceCollection services)
   {
     services.AddServiceDiscovery(Configuration);
+  }
+}
+```
+
+Consulta de endereços via DNS (comumente utilizado para balancemaneto de carga via Consul):
+
+```csharp
+public class FooService
+{
+  private readonly IDnsServiceDiscovery _dnsService;
+  // Injection via DI
+
+  public async Task<string> RetrieveApiAddres()
+  {
+      return await _dnsService.SearchByNameAsync("MinhaApi.service.consul");
   }
 }
 ```
