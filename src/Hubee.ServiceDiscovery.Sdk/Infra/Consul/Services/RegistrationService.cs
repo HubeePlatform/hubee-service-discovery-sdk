@@ -79,6 +79,7 @@ namespace Hubee.ServiceDiscovery.Sdk.Infra.Consul.Services
         {
             try
             {
+                _logger.LogInformation($"Deregistering {_instanceRegistrationId}");
                 _stoppingCancellationTokenSource.Cancel();
                 await _consulClient.Agent.ServiceDeregister(_instanceRegistrationId, cancellationToken);
             }
