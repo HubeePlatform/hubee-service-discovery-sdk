@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30611.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{69E68B45-3542-42FC-9739-C209FA37802F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubee.ServiceDiscovery.Sdk", "src\Hubee.ServiceDiscovery.Sdk\Hubee.ServiceDiscovery.Sdk.csproj", "{A367E3DF-2338-4EED-A7ED-43565B41E2B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubee.ServiceDiscovery.Sdk.Tests", "src\Hubee.ServiceDiscovery.Sdk.Tests\Hubee.ServiceDiscovery.Sdk.Tests.csproj", "{5E33E49F-F991-4202-B4A0-4A859B9A2179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubee.ServiceDiscovery.Sdk.Tests", "src\Hubee.ServiceDiscovery.Sdk.Tests\Hubee.ServiceDiscovery.Sdk.Tests.csproj", "{5E33E49F-F991-4202-B4A0-4A859B9A2179}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
