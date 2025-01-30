@@ -14,7 +14,12 @@ namespace Hubee.ServiceDiscovery.Sdk.Core.Helpers
             var address = server.Features
                 .Get<IServerAddressesFeature>()
                 .Addresses
-                .First();
+                .FirstOrDefault();
+
+            if (address == null)
+            {
+                throw new InvalidOperationException("Server started, but address not found");
+            }
 
             if (address.Contains("+:"))
                 return int.Parse(address.Split(':')[2]);

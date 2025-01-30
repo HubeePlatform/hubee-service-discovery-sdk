@@ -22,13 +22,15 @@ namespace Hubee.ServiceDiscovery.Sdk.Infra.Consul.Services
         private readonly IOptions<HubeeServiceDiscoveryConfig> _config;
         private string _instanceRegistrationId;
         private readonly ILogger<RegistrationService> _logger;
+        private readonly IApplicationLifetime _applicationLifetime;
 
         public RegistrationService(
             IConsulClient consulClient,
             IHostingEnvironment hostingEnvironment,
             IServer server,
             IOptions<HubeeServiceDiscoveryConfig> config,
-            ILogger<RegistrationService> logger
+            ILogger<RegistrationService> logger,
+            IApplicationLifetime applicationLifetime
             )
         {
             _consulClient = consulClient;
@@ -36,37 +38,40 @@ namespace Hubee.ServiceDiscovery.Sdk.Infra.Consul.Services
             _server = server;
             _config = config;
             _logger = logger;
+            _applicationLifetime = applicationLifetime;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                _stoppingCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-                var servicePort = ServiceHelper.GetPort(_server);
-                var serviceIp = ServiceHelper.GetNonLoopbackIp();
-
-                _instanceRegistrationId = _config.Value.GetInstanceRegistrationId();
-
-                var registration = new AgentServiceRegistration
+                _applicationLifetime.ApplicationStarted.Register(async () =>
                 {
-                    ID = _instanceRegistrationId,
-                    Name = _config.Value.ServiceName,
-                    Address = serviceIp,
-                    Port = servicePort,
-                    Check = new AgentServiceCheck
+                    _stoppingCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    var servicePort = ServiceHelper.GetPort(_server);
+                    var serviceIp = ServiceHelper.GetNonLoopbackIp();
+
+                    _instanceRegistrationId = _config.Value.GetInstanceRegistrationId();
+
+                    var registration = new AgentServiceRegistration
                     {
-                        HTTP = $"http://{serviceIp}:{servicePort}/{_config.Value.HealthCheck.Endpoint}",
-                        Interval = TimeSpan.FromSeconds(_config.Value.HealthCheck.Interval),
-                        DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(_config.Value.HealthCheck.DeregisterCriticalServiceAfter),
-                    }
-                };
+                        ID = _instanceRegistrationId,
+                        Name = _config.Value.ServiceName,
+                        Address = serviceIp,
+                        Port = servicePort,
+                        Check = new AgentServiceCheck
+                        {
+                            HTTP = $"http://{serviceIp}:{servicePort}/{_config.Value.HealthCheck.Endpoint}",
+                            Interval = TimeSpan.FromSeconds(_config.Value.HealthCheck.Interval),
+                            DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(_config.Value.HealthCheck.DeregisterCriticalServiceAfter),
+                        }
+                    };
 
-                await _consulClient.Agent.ServiceDeregister(registration.ID, _stoppingCancellationTokenSource.Token);
-                await _consulClient.Agent.ServiceRegister(registration, _stoppingCancellationTokenSource.Token);
+                    await _consulClient.Agent.ServiceDeregister(registration.ID, _stoppingCancellationTokenSource.Token);
+                    await _consulClient.Agent.ServiceRegister(registration, _stoppingCancellationTokenSource.Token);
 
-                RegisterConsulInstanceId();
+                    RegisterConsulInstanceId();
+                });
             }
             catch (Exception ex)
             {
