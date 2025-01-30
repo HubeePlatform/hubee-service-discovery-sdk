@@ -5,14 +5,14 @@ on:
     branches: [ master ]
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 7.0.100
     - name: Pack
       run: dotnet pack --configuration Release
     - name: Push to GitHub Feed
