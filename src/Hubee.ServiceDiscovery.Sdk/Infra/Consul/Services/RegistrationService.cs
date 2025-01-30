@@ -64,7 +64,6 @@ namespace Hubee.ServiceDiscovery.Sdk.Infra.Consul.Services
                             HTTP = $"http://{serviceIp}:{servicePort}/{_config.Value.HealthCheck.Endpoint}",
                             Interval = TimeSpan.FromSeconds(_config.Value.HealthCheck.Interval),
                             DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(_config.Value.HealthCheck.DeregisterCriticalServiceAfter),
-                            CheckID = _instanceRegistrationId
                         }
                     };
 
